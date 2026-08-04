@@ -1,0 +1,427 @@
+// =====================================================================
+// Sched Prisma Database Connection & Schema Config (schema.prisma)
+// Production-grade relational structure supporting multi-tenancy,
+// isolated media library, decoupled schedules, and activity tracking.
+// =====================================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// 1. Authentication Enums & Roles
+// ==========================================
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  EDITOR
+}
+
+enum PlatformType {
+  SOCIAL
+  COMMUNICATION
+  COMMERCE
+  AUTOMATION
+  CUSTOM
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  FAILED
+}
+
+enum ScheduleStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PublishStatus {
+  PENDING
+  PUBLISHING
+  PUBLISHED
+  FAILED
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  ERROR
+  SYSTEM
+}
+
+// ==========================================
+// 2. Identity & Access Control Models
+// ==========================================
+
+model User {
+  id            String            @id @default(uuid()) @db.Uuid
+  email         String            @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  deletedAt     DateTime?
+  
+  // Relations
+  memberships   WorkspaceMember[]
+  refreshTokens RefreshToken[]
+  authoredPosts Post[]
+  mediaAssets   MediaAsset[]
+  notifications Notification[]
+  aiHistories   AIHistory[]
+  auditLogs     AuditLog[]
+  sentInvitations WorkspaceInvitation[] @relation("InvitedBy")
+
+  @@index([email])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([token])
+}
+
+// ==========================================
+// 3. Tenancy & Workspace Management
+// ==========================================
+
+model Workspace {
+  id           String            @id @default(uuid()) @db.Uuid
+  name         String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  deletedAt    DateTime?
+  
+  // Relations
+  members      WorkspaceMember[]
+  integrations Integration[]
+  posts        Post[]
+  mediaAssets  MediaAsset[]
+  notifications Notification[]
+  aiHistories  AIHistory[]
+  auditLogs    AuditLog[]
+  invitations  WorkspaceInvitation[]
+}
+
+model WorkspaceMember {
+  id          String        @id @default(uuid()) @db.Uuid
+  workspaceId String        @db.Uuid
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String        @db.Uuid
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        WorkspaceRole @default(MEMBER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+}
+
+// ==========================================
+// 4. Integrations & Platforms catalog
+// ==========================================
+
+model ConnectedPlatform {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String
+  code         String        @unique // e.g., "slack", "linkedin", "meta"
+  type         PlatformType
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  
+  // Relations
+  integrations Integration[]
+
+  @@index([code])
+}
+
+model Integration {
+  id           String            @id @default(uuid()) @db.Uuid
+  workspaceId  String            @db.Uuid
+  workspace    Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  platformId   String            @db.Uuid
+  platform     ConnectedPlatform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  
+  // OAuth / Credentials payloads (Encrypted in transit and database)
+  accessToken  String
+  refreshToken String?
+  expiresAt    DateTime?
+  settings     Json?             // Platform-specific configuration block
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  deletedAt    DateTime?
+  
+  // Relations
+  socialAccounts SocialAccount[]
+
+  @@unique([workspaceId, platformId])
+  @@index([workspaceId])
+  @@index([platformId])
+}
+
+model SocialAccount {
+  id            String            @id @default(uuid()) @db.Uuid
+  integrationId String            @db.Uuid
+  integration   Integration       @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  
+  platformAccountId String        // Specific page/channel/guild identifier on platform
+  platformUsername  String        // Display name of external target
+  platformAvatar    String?       // Profile photo/icon url
+  settings          Json?         // Custom configurations per target (e.g. channel notifications)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  deletedAt         DateTime?
+  
+  // Relations
+  schedules        Schedule[]
+  postDestinations PostDestination[]
+  analytics        Analytics[]
+
+  @@unique([integrationId, platformAccountId])
+  @@index([integrationId])
+  @@index([platformAccountId])
+}
+
+// ==========================================
+// 5. Assets & Core Publications (Posts)
+// ==========================================
+
+model MediaAsset {
+  id          String      @id @default(uuid()) @db.Uuid
+  workspaceId String      @db.Uuid
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String      @db.Uuid
+  user        User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  name        String
+  fileUrl     String
+  mimeType    String
+  fileSize    Int
+  width       Int?
+  height      Int?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  
+  // Relations
+  posts       PostMedia[]
+
+  @@index([workspaceId])
+}
+
+model Post {
+  id          String            @id @default(uuid()) @db.Uuid
+  workspaceId String            @db.Uuid
+  workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String            @db.Uuid
+  user        User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  title       String?
+  content     String            @db.Text
+  status      PostStatus        @default(DRAFT)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
+  
+  // Relations
+  media       PostMedia[]
+  schedules   Schedule[]
+  destinations PostDestination[]
+  analytics   Analytics[]
+
+  @@index([workspaceId])
+  @@index([status])
+}
+
+// Junction table mapping Post to MediaAsset libraries
+model PostMedia {
+  id           String     @id @default(uuid()) @db.Uuid
+  postId       String     @db.Uuid
+  post         Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  mediaAssetId String     @db.Uuid
+  mediaAsset   MediaAsset @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([postId, mediaAssetId])
+  @@index([postId])
+  @@index([mediaAssetId])
+}
+
+// ==========================================
+// 6. Schedules & Deliveries
+// ==========================================
+
+model Schedule {
+  id              String         @id @default(uuid()) @db.Uuid
+  postId          String         @db.Uuid
+  post            Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  socialAccountId String         @db.Uuid
+  socialAccount   SocialAccount  @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  scheduledAt     DateTime
+  status          ScheduleStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  deletedAt       DateTime?
+  
+  // Relations
+  destinations    PostDestination[]
+
+  @@index([postId])
+  @@index([socialAccountId])
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+model PostDestination {
+  id              String         @id @default(uuid()) @db.Uuid
+  postId          String         @db.Uuid
+  post            Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  socialAccountId String         @db.Uuid
+  socialAccount   SocialAccount  @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  scheduleId      String?        @db.Uuid
+  schedule        Schedule?      @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  
+  status          PublishStatus  @default(PENDING)
+  externalItemId  String?        // ID returned by external platform (e.g. Slack ts value)
+  externalItemUrl String?        // Direct link to the external entity
+  errorMessage    String?
+  publishedAt     DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  deletedAt       DateTime?
+  
+  // Relations
+  analytics       Analytics[]
+
+  @@unique([postId, socialAccountId, scheduleId])
+  @@index([postId])
+  @@index([socialAccountId])
+  @@index([scheduleId])
+  @@index([status])
+}
+
+// ==========================================
+// 7. Operations, Logs & Analytics
+// ==========================================
+
+model Analytics {
+  id                String           @id @default(uuid()) @db.Uuid
+  postId            String?          @db.Uuid
+  post              Post?            @relation(fields: [postId], references: [id], onDelete: SetNull)
+  postDestinationId String?          @db.Uuid
+  postDestination   PostDestination? @relation(fields: [postDestinationId], references: [id], onDelete: SetNull)
+  socialAccountId   String           @db.Uuid
+  socialAccount     SocialAccount    @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  
+  metricName        String
+  metricValue       Int
+  timestamp         DateTime
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([postId])
+  @@index([postDestinationId])
+  @@index([socialAccountId])
+  @@index([metricName, timestamp])
+}
+
+model Notification {
+  id          String           @id @default(uuid()) @db.Uuid
+  workspaceId String?          @db.Uuid
+  workspace   Workspace?       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String           @db.Uuid
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  message     String
+  type        NotificationType @default(INFO)
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
+
+  @@index([userId])
+  @@index([workspaceId])
+  @@index([isRead])
+}
+
+model AIHistory {
+  id               String    @id @default(uuid()) @db.Uuid
+  workspaceId      String    @db.Uuid
+  workspace        Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId           String    @db.Uuid
+  user             User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  provider         String    // e.g., "gemini", "openai"
+  model            String    // e.g., "gemini-1.5-flash"
+  prompt           String    @db.Text
+  response         String    @db.Text
+  promptTokens     Int?
+  completionTokens Int?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([workspaceId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id          String     @id @default(uuid()) @db.Uuid
+  workspaceId String?    @db.Uuid
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  userId      String     @db.Uuid
+  user        User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  action      String     // e.g., "USER_LOGIN", "POST_CREATED"
+  entityType  String     // e.g., "Post", "ConnectedAccount"
+  entityId    String?
+  metadata    Json?
+  ipAddress   String?
+  createdAt   DateTime   @default(now())
+
+  @@index([workspaceId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model WorkspaceInvitation {
+  id           String            @id @default(uuid()) @db.Uuid
+  workspaceId  String            @db.Uuid
+  workspace    Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  email        String
+  role         WorkspaceRole     @default(MEMBER)
+  token        String            @unique
+  invitedById  String            @db.Uuid
+  invitedBy    User              @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  acceptedAt   DateTime?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([token])
+  @@index([email])
+}

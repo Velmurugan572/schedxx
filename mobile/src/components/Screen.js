@@ -1,0 +1,28 @@
+import { SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { useTheme } from '../theme/index.js';
+
+export const Screen = ({ children, style }) => {
+  const { theme } = useTheme();
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+      <View style={[styles.inner, style]}>
+        {children}
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  inner: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 8
+  }
+});
+
+export default Screen;

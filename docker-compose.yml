@@ -1,0 +1,69 @@
+# =====================================================================
+# Sched Root Docker Compose configuration (Development Environment)
+# =====================================================================
+
+version: '3.8'
+
+services:
+  # Relational Database service
+  postgres:
+    image: postgres:16-alpine
+    container_name: sched_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: sched_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sched_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # In-memory caching and queuing service (required for BullMQ)
+  redis:
+    image: redis:7-alpine
+    container_name: sched_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Express Web API server container
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sched_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres_password@postgres:5432/sched_db?schema=public
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./backend:/app
+      - /app/node_modules # Virtualize node_modules to avoid host OS lock issues
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
