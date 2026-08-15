@@ -191,47 +191,53 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   scroll: {
-    paddingVertical: 16
+    paddingVertical: 12
   },
   card: {
-    padding: 16,
-    borderRadius: 8,
+    padding: 18,
+    borderRadius: 20,
     borderWidth: 1,
-    marginBottom: 16
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 12,
+    letterSpacing: 0.2
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#e2e8f0'
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)'
   },
   infoVal: {
-    fontWeight: '500'
+    fontWeight: '600'
   },
   themeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 4
+    marginVertical: 6
   },
   themeBtn: {
     flex: 0.31,
-    height: 38,
+    height: 40,
     borderWidth: 1,
-    borderRadius: 6,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center'
   },
   toneBtn: {
     flex: 0.31,
-    height: 32,
+    height: 36,
     borderWidth: 1,
-    borderRadius: 6,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -239,15 +245,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8
+    paddingVertical: 10
   },
   subLabel: {
-    fontSize: 13,
-    fontWeight: '500',
-    marginBottom: 8
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 8,
+    letterSpacing: 0.3
   },
   logoutButton: {
-    marginTop: 8,
+    marginTop: 10,
     marginBottom: 24
   }
 });

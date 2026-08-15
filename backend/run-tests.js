@@ -3,7 +3,7 @@ import { writeFileSync } from 'fs';
 import path from 'path';
 
 const cwd = process.cwd();
-const result = spawnSync('C:/Program Files/nodejs/node.exe', [path.join(cwd, 'node_modules/jest/bin/jest.js'), '--runInBand', '--detectOpenHandles', '--verbose'], {
+const result = spawnSync('C:/Program Files/nodejs/node.exe', ['--experimental-vm-modules', path.join(cwd, 'node_modules/jest/bin/jest.js'), '--runInBand', '--detectOpenHandles', '--verbose'], {
   cwd,
   encoding: 'utf8',
   env: { ...process.env, FORCE_COLOR: '0' }

@@ -24,19 +24,19 @@ export const Button = ({ title, onPress, variant = 'primary', loading = false, d
 
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
+      activeOpacity={0.85}
       onPress={onPress}
       disabled={disabled || loading}
       style={[
         styles.button,
         { backgroundColor },
-        isOutline && { borderContext: 1, borderColor: theme.colors.primary, borderWidth: 1 },
-        (disabled || loading) && { opacity: 0.6 },
+        isOutline && { borderColor: theme.colors.primary, borderWidth: 1 },
+        (disabled || loading) && { opacity: 0.5 },
         style
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={textColor} />
+        <ActivityIndicator color={textColor} size="small" />
       ) : (
         <Text style={[styles.text, { color: textColor }]}>{title}</Text>
       )}
@@ -47,15 +47,21 @@ export const Button = ({ title, onPress, variant = 'primary', loading = false, d
 const styles = StyleSheet.create({
   button: {
     height: 48,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    marginVertical: 8
+    paddingHorizontal: 20,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3
   },
   text: {
-    fontSize: 16,
-    fontWeight: '600'
+    fontSize: 15,
+    fontWeight: '600',
+    letterSpacing: 0.3
   }
 });
 

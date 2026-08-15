@@ -6,7 +6,7 @@ export const Screen = ({ children, style }) => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
       <View style={[styles.inner, style]}>
         {children}
       </View>

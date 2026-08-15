@@ -154,92 +154,113 @@ const styles = StyleSheet.create({
     padding: 16
   },
   errorText: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 16,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: '600'
   },
   headerContainer: {
-    paddingTop: 16
+    paddingTop: 8
   },
   sectionHeading: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12
+    fontSize: 16,
+    fontWeight: '800',
+    marginBottom: 12,
+    letterSpacing: 0.2
   },
   statsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12
+    marginBottom: 14
   },
   statCard: {
     width: '48%',
-    padding: 16,
-    borderRadius: 8,
+    padding: 18,
+    borderRadius: 20,
     borderWidth: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 3
   },
   statNum: {
-    fontSize: 24,
-    fontWeight: 'bold'
+    fontSize: 26,
+    fontWeight: '800',
+    letterSpacing: -0.5
   },
   statLabel: {
     fontSize: 12,
-    marginTop: 4
+    marginTop: 6,
+    fontWeight: '600'
   },
   fullCard: {
-    padding: 16,
-    borderRadius: 8,
+    padding: 20,
+    borderRadius: 20,
     borderWidth: 1,
     alignItems: 'center',
     marginVertical: 4,
-    marginBottom: 24
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4
   },
   fullLabel: {
-    fontSize: 12
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.3
   },
   fullValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '900',
+    letterSpacing: -1,
     marginTop: 6
   },
   filterRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 12
+    marginTop: 12,
+    marginBottom: 16
   },
   badgeRow: {
     flexDirection: 'row'
   },
   badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginLeft: 6
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginLeft: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)'
   },
   badgeText: {
-    fontSize: 10,
-    fontWeight: 'bold'
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0.5
   },
   historyRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1
   },
   historyTitle: {
-    fontSize: 15,
-    fontWeight: '600'
+    fontSize: 14,
+    fontWeight: '700'
   },
   historyDate: {
-    fontSize: 12,
-    marginTop: 2
+    fontSize: 11,
+    marginTop: 4,
+    fontWeight: '500'
   },
   historyValue: {
-    fontSize: 16,
-    fontWeight: 'bold'
+    fontSize: 15,
+    fontWeight: '800'
   }
 });
 

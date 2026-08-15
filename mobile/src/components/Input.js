@@ -6,7 +6,7 @@ export const Input = ({ label, placeholder, value, onChangeText, secureTextEntry
 
   return (
     <View style={styles.container}>
-      {label && <Text style={[styles.label, { color: theme.colors.textMuted }]}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: theme.colors.textMuted }]}>{label.toUpperCase()}</Text>}
       <TextInput
         placeholder={placeholder}
         placeholderTextColor={theme.colors.textMuted}
@@ -14,6 +14,7 @@ export const Input = ({ label, placeholder, value, onChangeText, secureTextEntry
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
+        autoCapitalize="none"
         style={[
           styles.input,
           {
@@ -30,24 +31,27 @@ export const Input = ({ label, placeholder, value, onChangeText, secureTextEntry
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    marginVertical: 10,
     width: '100%'
   },
   label: {
-    fontSize: 14,
+    fontSize: 11,
     marginBottom: 6,
-    fontWeight: '500'
+    fontWeight: '700',
+    letterSpacing: 1
   },
   input: {
-    height: 48,
+    height: 50,
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    fontSize: 15,
+    letterSpacing: 0.2
   },
   error: {
     fontSize: 12,
-    marginTop: 4
+    marginTop: 6,
+    fontWeight: '500'
   }
 });
 

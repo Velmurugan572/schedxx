@@ -319,61 +319,68 @@ export const CreatePostScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   scroll: {
-    paddingVertical: 16
+    paddingVertical: 12
   },
   form: {
     flex: 1
   },
   editorContainer: {
-    marginBottom: 16
+    marginBottom: 20
   },
   charCounter: {
     alignSelf: 'flex-end',
-    fontSize: 12,
-    marginTop: 4
+    fontSize: 11,
+    marginTop: 6,
+    fontWeight: '600'
   },
   attachmentsSection: {
-    marginVertical: 8
+    marginVertical: 12
   },
   attachmentScroll: {
     flexDirection: 'row',
-    marginBottom: 8
+    marginBottom: 12
   },
   thumbWrapper: {
     position: 'relative',
-    marginRight: 12
+    marginRight: 14
   },
   miniThumb: {
-    width: 60,
-    height: 60,
-    borderRadius: 6
+    width: 64,
+    height: 64,
+    borderRadius: 12
   },
   closeBtn: {
     position: 'absolute',
-    top: -4,
-    right: -4,
+    top: -6,
+    right: -6,
     backgroundColor: '#ef4444',
-    borderRadius: 10,
-    width: 16,
-    height: 16,
+    borderRadius: 12,
+    width: 18,
+    height: 18,
     alignItems: 'center',
     justifyContent: 'center'
   },
   section: {
-    padding: 16,
-    borderRadius: 8,
+    padding: 20,
+    borderRadius: 20,
     borderWidth: 1,
-    marginVertical: 12
+    marginVertical: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 4
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 14,
+    letterSpacing: 0.3
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 4
+    marginVertical: 6
   },
   rowBtn: {
     flex: 0.48,
@@ -381,22 +388,27 @@ const styles = StyleSheet.create({
   },
   tip: {
     fontSize: 11,
-    marginTop: 8,
-    textAlign: 'center'
+    marginTop: 10,
+    textAlign: 'center',
+    fontWeight: '600'
   },
   saveButton: {
-    marginTop: 16
+    marginTop: 20,
+    marginBottom: 16
   },
   modalCell: {
-    width: '32%',
+    width: '30%',
     aspectRatio: 1,
-    margin: '0.6%',
-    borderRadius: 4,
-    overflow: 'hidden'
+    margin: '1.5%',
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)'
   },
   modalThumb: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    backgroundColor: '#161F32'
   }
 });
 

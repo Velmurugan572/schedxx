@@ -102,52 +102,63 @@ const styles = StyleSheet.create({
     padding: 16
   },
   errorText: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 16,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: '600'
   },
   list: {
     flex: 1,
-    paddingTop: 16
+    paddingTop: 8
   },
   card: {
-    padding: 16,
-    borderRadius: 8,
-    marginVertical: 6
+    padding: 18,
+    borderRadius: 16,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8
+    marginBottom: 10
   },
   badgeRow: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    flex: 0.9
   },
   unreadBadge: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginLeft: 8
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginLeft: 10
   },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold'
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 0.1
   },
   delete: {
-    fontSize: 16,
+    fontSize: 14,
     paddingHorizontal: 8,
-    fontWeight: 'bold'
+    fontWeight: '700'
   },
   body: {
-    fontSize: 14,
-    lineHeight: 20
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: '500'
   },
   time: {
     fontSize: 10,
-    marginTop: 8,
-    alignSelf: 'flex-end'
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    fontWeight: '600',
+    letterSpacing: 0.2
   }
 });
 

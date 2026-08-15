@@ -20,8 +20,14 @@ export const SplashScreen = () => {
   return (
     <Screen style={styles.container}>
       <View style={styles.logoContainer}>
-        <Text style={[styles.title, { color: theme.colors.primary }]}>SCHED</Text>
-        <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>Mobile Workspace Suite</Text>
+        {/* Hexagonal Geometric Logo */}
+        <View style={styles.logoWrapper}>
+          <View style={[styles.hexPart, { borderColor: theme.colors.primary }]} />
+          <View style={[styles.hexPartInner, { borderColor: theme.colors.accent }]} />
+          <Text style={[styles.logoText, { color: theme.colors.text }]}>S</Text>
+        </View>
+        <Text style={[styles.title, { color: theme.colors.text }]}>SchedX</Text>
+        <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>Schedule Smarter. Grow Faster.</Text>
       </View>
     </Screen>
   );
@@ -30,20 +36,52 @@ export const SplashScreen = () => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#0B1020'
   },
   logoContainer: {
     alignItems: 'center'
   },
-  title: {
-    fontSize: 48,
+  logoWrapper: {
+    width: 90,
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+    position: 'relative'
+  },
+  hexPart: {
+    position: 'absolute',
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    borderWidth: 3,
+    transform: [{ rotate: '45deg' }]
+  },
+  hexPartInner: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 14,
+    borderWidth: 2,
+    transform: [{ rotate: '15deg' }],
+    opacity: 0.7
+  },
+  logoText: {
+    fontSize: 36,
     fontWeight: '900',
-    letterSpacing: 4
+    letterSpacing: -1
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '900',
+    letterSpacing: 2
   },
   subtitle: {
-    fontSize: 16,
-    marginTop: 8,
-    fontWeight: '500'
+    fontSize: 14,
+    marginTop: 10,
+    fontWeight: '600',
+    letterSpacing: 0.5
   }
 });
 

@@ -46,8 +46,12 @@ export const WorkspaceSelectorScreen = ({ navigation }) => {
   return (
     <Screen>
       <View style={styles.header}>
+        {/* Hexagonal S Monogram */}
+        <View style={[styles.logoWrapper, { borderColor: theme.colors.primary }]}>
+          <Text style={[styles.logoText, { color: theme.colors.text }]}>S</Text>
+        </View>
         <Text style={[styles.title, { color: theme.colors.text }]}>Select Workspace</Text>
-        <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>Choose a workspace to continue</Text>
+        <Text style={[styles.subtitle, { color: theme.colors.textMuted }]}>Choose a workspace to continue to SchedX</Text>
       </View>
 
       {isLoading && workspaces.length === 0 ? (
@@ -64,6 +68,7 @@ export const WorkspaceSelectorScreen = ({ navigation }) => {
           data={workspaces}
           keyExtractor={(item) => item.id}
           style={styles.list}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
             const isActive = activeWorkspace?.id === item.id;
             return (
@@ -74,12 +79,19 @@ export const WorkspaceSelectorScreen = ({ navigation }) => {
                   {
                     backgroundColor: theme.colors.card,
                     borderColor: isActive ? theme.colors.primary : theme.colors.border,
-                    borderWidth: isActive ? 2 : 1
+                    borderWidth: isActive ? 1.5 : 1
                   }
                 ]}
               >
-                <Text style={[styles.cardTitle, { color: theme.colors.text }]}>{item.name}</Text>
-                <Text style={[styles.cardRole, { color: theme.colors.textMuted }]}>{item.role}</Text>
+                <View>
+                  <Text style={[styles.cardTitle, { color: theme.colors.text }]}>{item.name}</Text>
+                  <Text style={[styles.cardMeta, { color: theme.colors.textMuted }]}>Enterprise Suite</Text>
+                </View>
+                <View style={[styles.roleBadge, { backgroundColor: isActive ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255, 255, 255, 0.05)' }]}>
+                  <Text style={[styles.cardRole, { color: isActive ? theme.colors.primary : theme.colors.textMuted }]}>
+                    {item.role ? item.role.toUpperCase() : 'MEMBER'}
+                  </Text>
+                </View>
               </TouchableOpacity>
             );
           }}
@@ -102,16 +114,32 @@ export const WorkspaceSelectorScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   header: {
-    marginVertical: 24,
+    marginVertical: 20,
     alignItems: 'center'
+  },
+  logoWrapper: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    transform: [{ rotate: '45deg' }]
+  },
+  logoText: {
+    fontSize: 20,
+    fontWeight: '900',
+    transform: [{ rotate: '-45deg' }]
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold'
+    fontWeight: '800',
+    letterSpacing: -0.5
   },
   subtitle: {
     fontSize: 14,
-    marginTop: 4
+    marginTop: 6
   },
   list: {
     flex: 1
@@ -134,20 +162,36 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   card: {
-    padding: 16,
-    borderRadius: 8,
-    marginVertical: 6,
+    padding: 18,
+    borderRadius: 16,
+    marginVertical: 8,
+    borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: '700'
+  },
+  cardMeta: {
+    fontSize: 11,
+    marginTop: 4
+  },
+  roleBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8
   },
   cardRole: {
-    fontSize: 12,
-    fontWeight: 'bold'
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5
   },
   createForm: {
     paddingTop: 16,
@@ -155,9 +199,10 @@ const styles = StyleSheet.create({
     marginTop: 16
   },
   formTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 4,
+    letterSpacing: 0.2
   }
 });
 

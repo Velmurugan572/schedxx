@@ -119,46 +119,55 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   errorText: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 16,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: '600'
   },
   row: {
     justifyContent: 'space-between',
-    paddingHorizontal: 8
+    paddingHorizontal: 4
   },
   card: {
     width: '48%',
-    borderRadius: 8,
+    borderRadius: 18,
     borderWidth: 1,
     overflow: 'hidden',
-    marginVertical: 8
+    marginVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 3
   },
   thumbnail: {
     width: '100%',
     height: 120,
-    backgroundColor: '#cbd5e1'
+    backgroundColor: '#161F32'
   },
   info: {
-    padding: 8
+    padding: 12
   },
   filename: {
-    fontSize: 14,
-    fontWeight: 'bold'
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.1
   },
   meta: {
-    fontSize: 11,
-    marginTop: 4
+    fontSize: 10,
+    marginTop: 4,
+    fontWeight: '500'
   },
   deleteBtn: {
     alignItems: 'center',
-    paddingVertical: 6,
+    paddingVertical: 10,
     borderTopWidth: 1,
-    borderTopColor: '#cbd5e1'
+    borderTopColor: 'rgba(255, 255, 255, 0.08)'
   },
   uploadButton: {
-    marginHorizontal: 8,
-    marginBottom: 16
+    marginHorizontal: 4,
+    marginBottom: 16,
+    marginTop: 10
   }
 });
 
